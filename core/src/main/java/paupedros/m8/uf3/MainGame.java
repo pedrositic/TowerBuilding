@@ -1,34 +1,23 @@
 package paupedros.m8.uf3;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class MainGame extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private Texture image;
+/** Clase principal del juego */
+public class MainGame extends Game {
+    public static final int WIDTH = 480;  // Ancho
+    public static final int HEIGHT = 800; // Alto (formato vertical)
+
+    public SpriteBatch batch;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
-    }
-
-    @Override
-    public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+        setScreen(new MenuScreen(this)); // Comenzamos en la pantalla inicial
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        image.dispose();
+        batch.dispose(); // Liberamos recursos
     }
 }
