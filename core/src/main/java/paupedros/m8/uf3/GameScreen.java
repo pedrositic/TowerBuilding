@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,13 +24,11 @@ public class GameScreen implements Screen {
     public GameScreen(MainGame game) {
         this.game = game;
         blocks = new ArrayList<>();
-
         // Crear el primer bloque (block_start.png)
         float blockWidth = MainGame.WIDTH / 3;
         float centerX = (MainGame.WIDTH - blockWidth) / 2; // Centrar el bloque horizontalmente
         Rectangle firstBlock = new Rectangle(centerX, 100, blockWidth, 50); // Posición inicial
         blocks.add(firstBlock);
-
         spawnNewBlock(); // Generar el segundo bloque
         font = new BitmapFont();
         font.getData().setScale(2);
@@ -42,7 +39,6 @@ public class GameScreen implements Screen {
 
     private void spawnNewBlock() {
         Rectangle topBlock = blocks.get(blocks.size() - 1); // Obtener el último bloque
-
         // Calcular el tamaño reducido manteniendo la proporción
         Texture blockTexture;
         if (blocks.isEmpty()) { // Si es el primer bloque
@@ -51,19 +47,15 @@ public class GameScreen implements Screen {
             // Bloques posteriores: seleccionar aleatoriamente entre block_basic.png y block_balcony.png
             blockTexture = game.blockTextures[random.nextInt(2) + 1];
         }
-
         // Calcular el tamaño reducido manteniendo la proporción
         float originalWidth = blockTexture.getWidth();
         float originalHeight = blockTexture.getHeight();
         float targetWidth = MainGame.WIDTH / 5; // Un tercio del ancho de la pantalla
         float reducedHeight = calculateReducedSize(originalWidth, originalHeight, targetWidth);
-
         // Centrar el bloque horizontalmente
         float centerX = (MainGame.WIDTH - targetWidth) / 2;
-
         // Crear el nuevo bloque
         currentBlock = new Rectangle(centerX, topBlock.y + topBlock.height, targetWidth, reducedHeight);
-
         blockSpeed = 400; // Velocidad inicial ajustada para pantallas más grandes
         movingRight = true;
     }
@@ -84,18 +76,12 @@ public class GameScreen implements Screen {
             if (currentBlock.x + currentBlock.width >= MainGame.WIDTH) {
                 currentBlock.x = MainGame.WIDTH - currentBlock.width; // Ajustar posición exacta
                 movingRight = false; // Cambiar dirección
-
-                // Log: Rebote en el borde derecho
-                System.out.println("Rebote en el borde DERECHO | Coordenadas: x=" + currentBlock.x + ", y=" + currentBlock.y);
             }
         } else {
             currentBlock.x -= blockSpeed * delta;
             if (currentBlock.x <= 0) {
                 currentBlock.x = 0; // Ajustar posición exacta
                 movingRight = true; // Cambiar dirección
-
-                // Log: Rebote en el borde izquierdo
-                System.out.println("Rebote en el borde IZQUIERDO | Coordenadas: x=" + currentBlock.x + ", y=" + currentBlock.y);
             }
         }
 
@@ -120,12 +106,30 @@ public class GameScreen implements Screen {
 
         // Dibujar elementos
         game.batch.begin();
-        game.batch.draw(game.backgroundTextures[1], 0, 0, MainGame.WIDTH, MainGame.HEIGHT); // Dibujar el fondo
-        for (Rectangle block : blocks) {
-            game.batch.draw(game.blockTextures[0], block.x, block.y, block.width, block.height); // Dibujar bloques
+
+        // Calcular desplazamiento vertical del fondo
+        float backgroundYOffset = -(score * 50); // Desplazamiento proporcional a la altura de la torre
+
+        // Dibujar el fondo según la puntuación
+        if (score == 0) {
+            // Primer fons: background_inicial.png
+            game.batch.draw(game.backgroundTextures[0], 0, backgroundYOffset, MainGame.WIDTH, MainGame.HEIGHT);
+        } else {
+            // Altres fons: background_cel.png o background_cel_2.png
+            game.batch.draw(game.backgroundTextures[1], 0, backgroundYOffset, MainGame.WIDTH, MainGame.HEIGHT);
         }
-        game.batch.draw(game.blockTextures[0], currentBlock.x, currentBlock.y, currentBlock.width, currentBlock.height); // Dibujar bloque móvil
-        font.draw(game.batch, "Altura: " + score, 10, MainGame.HEIGHT - 10); // Mostrar puntuación
+
+        // Dibuixar tots els blocs apilats
+        for (Rectangle block : blocks) {
+            game.batch.draw(game.blockTextures[0], block.x, block.y, block.width, block.height);
+        }
+
+        // Dibuixar el bloc mòbil actual
+        game.batch.draw(game.blockTextures[0], currentBlock.x, currentBlock.y, currentBlock.width, currentBlock.height);
+
+        // Mostrar la puntuació
+        font.draw(game.batch, "Altura: " + score, 10, MainGame.HEIGHT - 10);
+
         game.batch.end();
     }
 
@@ -137,8 +141,13 @@ public class GameScreen implements Screen {
             // Crear un nuevo bloque en la posición actual
             currentBlock.y = topBlock.y + topBlock.height; // Colocar encima del último bloque
             blocks.add(new Rectangle(currentBlock.x, currentBlock.y, currentBlock.width, currentBlock.height));
-
             score++; // Incrementar la puntuación
+
+            // Desplazar todos los bloques hacia abajo
+            float blockDropDistance = 50; // Distancia que bajan los bloques
+            for (Rectangle block : blocks) {
+                block.y -= blockDropDistance;
+            }
 
             // Aumentar la velocidad del bloque
             blockSpeed *= 1.25f;
