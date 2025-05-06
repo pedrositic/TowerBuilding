@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
+
 import java.util.ArrayList;
 import java.util.Random;
 
-/** Pantalla de juego principal */
+/**
+ * Pantalla de juego principal
+ */
 public class GameScreen implements Screen {
     private MainGame game;
     private ArrayList<Rectangle> blocks; // Lista de bloques apilados
@@ -35,7 +38,8 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+    }
 
     private void spawnNewBlock() {
         Rectangle topBlock = blocks.get(blocks.size() - 1); // Obtener el último bloque
@@ -107,27 +111,24 @@ public class GameScreen implements Screen {
         // Dibujar elementos
         game.batch.begin();
 
-        // Calcular desplazamiento vertical del fondo
-        float backgroundYOffset = -(score * 50); // Desplazamiento proporcional a la altura de la torre
-
         // Dibujar el fondo según la puntuación
-        if (score == 0) {
-            // Primer fons: background_inicial.png
-            game.batch.draw(game.backgroundTextures[0], 0, backgroundYOffset, MainGame.WIDTH, MainGame.HEIGHT);
+        if (score < 15) {
+            // Primeros 15 puntos: background_inicial.png
+            game.batch.draw(game.backgroundTextures[0], 0, 0, MainGame.WIDTH, MainGame.HEIGHT);
         } else {
-            // Altres fons: background_cel.png o background_cel_2.png
-            game.batch.draw(game.backgroundTextures[1], 0, backgroundYOffset, MainGame.WIDTH, MainGame.HEIGHT);
+            // Después de 15 puntos: background_cel.png o background_cel_2.png
+            game.batch.draw(game.backgroundTextures[1], 0, 0, MainGame.WIDTH, MainGame.HEIGHT);
         }
 
-        // Dibuixar tots els blocs apilats
+        // Dibujar todos los bloques apilados
         for (Rectangle block : blocks) {
             game.batch.draw(game.blockTextures[0], block.x, block.y, block.width, block.height);
         }
 
-        // Dibuixar el bloc mòbil actual
+        // Dibujar el bloque móvil actual
         game.batch.draw(game.blockTextures[0], currentBlock.x, currentBlock.y, currentBlock.width, currentBlock.height);
 
-        // Mostrar la puntuació
+        // Mostrar la puntuación
         font.draw(game.batch, "Altura: " + score, 10, MainGame.HEIGHT - 10);
 
         game.batch.end();
@@ -144,9 +145,11 @@ public class GameScreen implements Screen {
             score++; // Incrementar la puntuación
 
             // Desplazar todos los bloques hacia abajo
-            float blockDropDistance = 50; // Distancia que bajan los bloques
-            for (Rectangle block : blocks) {
-                block.y -= blockDropDistance;
+            if (score >= 7) {
+                float blockDropDistance = currentBlock.height; // Distancia que bajan los bloques
+                for (Rectangle block : blocks) {
+                    block.y -= blockDropDistance;
+                }
             }
 
             // Aumentar la velocidad del bloque
@@ -164,16 +167,20 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+    }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
-    public void hide() {}
+    public void hide() {
+    }
 
     @Override
     public void dispose() {
