@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 // En MainGame.java
 public class MainGame extends Game {
-    public static final int WIDTH = 1080;  // Ancho de la pantalla
-    public static final int HEIGHT = 2400; // Alto de la pantalla
+    public static int WIDTH;  // Ancho de la pantalla
+    public static int HEIGHT; // Alto de la pantalla
 
     public SpriteBatch batch;
     public Texture[] blockTextures; // Array para almacenar las texturas de los bloques
@@ -17,6 +17,9 @@ public class MainGame extends Game {
 
     @Override
     public void create() {
+        WIDTH = Gdx.graphics.getWidth();
+        HEIGHT = Gdx.graphics.getHeight();
+
         batch = new SpriteBatch();
 
         // Cargar texturas de los bloques

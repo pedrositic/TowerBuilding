@@ -31,6 +31,7 @@ public class GameScreen implements Screen {
         font = new BitmapFont();
         font.getData().setScale(2);
         gameOver = false;
+        this.blockSpeed = 400;
     }
 
     private void spawnNewBlock() {
@@ -54,7 +55,6 @@ public class GameScreen implements Screen {
 
         currentBlock = new Rectangle(centerX, initialY, targetWidth, reducedHeight);
         currentBlockTexture = blockTexture;
-        blockSpeed = 400;
         movingRight = true;
         isFirstBlock = false;
     }
@@ -144,7 +144,7 @@ public class GameScreen implements Screen {
                 }
             }
 
-            blockSpeed *= 1.25f;
+            blockSpeed *= 1.03f;
             spawnNewBlock();
         } else {
             System.out.println("Jugador ha perdido. Cambiando a GameOverScreen...");
