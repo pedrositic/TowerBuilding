@@ -43,25 +43,31 @@ public class GameScreen implements Screen {
 
     private void spawnNewBlock() {
         Rectangle topBlock = blocks.get(blocks.size() - 1); // Obtener el último bloque
-        // Calcular el tamaño reducido manteniendo la proporción
+
+        // Determinar la textura del bloc segons si és el primer o no
         Texture blockTexture;
-        if (blocks.isEmpty()) { // Si es el primer bloque
+        if (blocks.isEmpty()) { // Si és el primer bloc
             blockTexture = game.blockTextures[0]; // block_start.png
         } else {
-            // Bloques posteriores: seleccionar aleatoriamente entre block_basic.png y block_balcony.png
+            // Seleccionar aleatòriament entre block_basic.png (índex 1) i block_balcony.png (índex 2)
             blockTexture = game.blockTextures[random.nextInt(2) + 1];
         }
+
         // Calcular el tamaño reducido manteniendo la proporción
         float originalWidth = blockTexture.getWidth();
         float originalHeight = blockTexture.getHeight();
-        float targetWidth = MainGame.WIDTH / 5; // Un tercio del ancho de la pantalla
+        float targetWidth = MainGame.WIDTH / 5; // Un terç de l'amplada de la pantalla
         float reducedHeight = calculateReducedSize(originalWidth, originalHeight, targetWidth);
-        // Centrar el bloque horizontalmente
+
+        // Centrar el bloc horitzontalment
         float centerX = (MainGame.WIDTH - targetWidth) / 2;
-        // Crear el nuevo bloque
+
+        // Crear el nou bloc
         currentBlock = new Rectangle(centerX, topBlock.y + topBlock.height, targetWidth, reducedHeight);
-        blockSpeed = 400; // Velocidad inicial ajustada para pantallas más grandes
+        blockSpeed = 400; // Velocitat inicial ajustada per pantalles més grans
         movingRight = true;
+
+        System.out.println("Bloc seleccionat: " + (blocks.isEmpty() ? "block_start" : "Aleatori"));
     }
 
     private float calculateReducedSize(float originalWidth, float originalHeight, float targetWidth) {
@@ -100,14 +106,6 @@ public class GameScreen implements Screen {
             blockPlaced = false;
         }
 
-        // Alternar el fondo cuando se alcance una altura específica
-        if (score >= 15 && score % 15 == 0) {
-            // Alternar entre background_cel.png y background_cel_2.png
-            game.backgroundTextures[1] = game.backgroundTextures[1].equals(game.backgroundTextures[2])
-                ? game.backgroundTextures[1]
-                : game.backgroundTextures[2];
-        }
-
         // Dibujar elementos
         game.batch.begin();
 
@@ -115,9 +113,12 @@ public class GameScreen implements Screen {
         if (score < 15) {
             // Primeros 15 puntos: background_inicial.png
             game.batch.draw(game.backgroundTextures[0], 0, 0, MainGame.WIDTH, MainGame.HEIGHT);
-        } else {
-            // Después de 15 puntos: background_cel.png o background_cel_2.png
+        } else if (score >= 15 && score < 50) {
+            // Entre 15 y 49 puntos: background_cel.png
             game.batch.draw(game.backgroundTextures[1], 0, 0, MainGame.WIDTH, MainGame.HEIGHT);
+        } else {
+            // A partir de 50 puntos: background_cel_2.png
+            game.batch.draw(game.backgroundTextures[2], 0, 0, MainGame.WIDTH, MainGame.HEIGHT);
         }
 
         // Dibujar todos los bloques apilados
