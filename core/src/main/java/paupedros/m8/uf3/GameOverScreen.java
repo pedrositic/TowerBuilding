@@ -10,6 +10,7 @@ public class GameOverScreen implements Screen {
     private MainGame game;
     private int score;
     private BitmapFont font;
+    private float timeSinceShown = 0f;
 
     public GameOverScreen(MainGame game, int score) {
         this.game = game;
@@ -23,17 +24,19 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        timeSinceShown += delta;
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Dibujar texto
         game.batch.begin();
-        font.draw(game.batch, "Fin del Juego", 100, MainGame.HEIGHT - 100); // Título
-        font.draw(game.batch, "Altura: " + score, 100, MainGame.HEIGHT - 200); // Altura alcanzada
-        font.draw(game.batch, "Toca para reiniciar", 100, MainGame.HEIGHT - 300); // Instrucciones
+        font.draw(game.batch, "Fin del Juego", 100, MainGame.HEIGHT - 100);
+        font.draw(game.batch, "Altura: " + score, 100, MainGame.HEIGHT - 200);
+        font.draw(game.batch, "Toca para reiniciar", 100, MainGame.HEIGHT - 300);
         game.batch.end();
 
-        // Reiniciar el juego si se toca la pantalla
-        if (Gdx.input.isTouched()) {
+        // Esperar 0.5 segundos antes de permitir el reinicio
+        if (timeSinceShown > 0.5f && Gdx.input.isTouched()) {
+            System.out.println("Reiniciando juego desde GameOverScreen");
             game.setScreen(new GameScreen(game));
         }
     }

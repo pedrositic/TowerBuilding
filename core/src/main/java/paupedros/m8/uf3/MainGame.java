@@ -1,6 +1,8 @@
 package paupedros.m8.uf3;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -44,6 +46,16 @@ public class MainGame extends Game {
             if (texture != null) {
                 texture.dispose();
             }
+        }
+    }
+
+    public void setScreen(Screen screen) {
+        if (this.screen != null) this.screen.hide();
+        this.screen = screen;
+        if (this.screen != null) {
+            System.out.println("Cambiando a la pantalla: " + screen.getClass().getSimpleName());
+            this.screen.show();
+            this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
     }
 }
