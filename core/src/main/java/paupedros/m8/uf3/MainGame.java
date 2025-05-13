@@ -23,10 +23,11 @@ public class MainGame extends Game {
         batch = new SpriteBatch();
 
         // Cargar texturas de los bloques
-        blockTextures = new Texture[3];
+        blockTextures = new Texture[4];
         blockTextures[0] = new Texture("block_start.png"); // Primer bloque
         blockTextures[1] = new Texture("block_basic.png");
         blockTextures[2] = new Texture("block_balcony.png");
+        blockTextures[3] = new Texture("block_cortinas.png");
 
         // Cargar texturas de los fondos
         backgroundTextures = new Texture[3];
