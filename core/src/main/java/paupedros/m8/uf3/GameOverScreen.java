@@ -31,8 +31,8 @@ public class GameOverScreen implements Screen {
 
         background = game.backgroundTextures[0];
         titleTexture = new Texture("Game_over.png");
-        scoreFont = new BitmapFont();
-        scoreFont.getData().setScale(10);
+        scoreFont = new BitmapFont(Gdx.files.internal("fonts/fuente.fnt")); // Fuente personalizada
+        scoreFont.getData().setScale(10); // Opcional, ajusta según tu fuente
         layout = new GlyphLayout();
 
         retryButton = new Texture("play_again_button.png");
