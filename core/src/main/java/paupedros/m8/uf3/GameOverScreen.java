@@ -9,54 +9,52 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Pantalla de fin de partida con fondo, título "Game Over", puntuación y dos botones.
+ * Pantalla de fin de partida con fondo, puntuación grande, título GAME OVER y dos botones.
  */
 public class GameOverScreen implements Screen {
     private final MainGame game;
     private final int score;
     private final Texture background;
     private final Texture titleTexture;
-    private final BitmapFont font;
+    private final BitmapFont scoreFont;
     private final Texture retryButton;
     private final Texture exitButton;
     private final Rectangle retryBounds;
     private final Rectangle exitBounds;
+    private final float buttonScale;
 
     public GameOverScreen(MainGame game, int score) {
         this.game = game;
         this.score = score;
-
-        // Cargar assets
+        // Cargar texturas
         background = game.backgroundTextures[0];
         titleTexture = new Texture("Game_over.png");
-        font = new BitmapFont();
-        font.getData().setScale(2);
+        scoreFont = new BitmapFont();
+        scoreFont.getData().setScale(4); // tamaño grande para la puntuación
         retryButton = new Texture("play_again_button.png");
         exitButton = new Texture("sortir_button.png");
-
-        // Posiciones
-        float titleX = (MainGame.WIDTH - titleTexture.getWidth()) / 2f;
-        float titleY = MainGame.HEIGHT - titleTexture.getHeight() - 100;
-
-        float scoreY = titleY - titleTexture.getHeight() - 30;
-
-        // Botones centrados uno debajo del otro
-        float btnX = (MainGame.WIDTH - retryButton.getWidth()) / 2f;
-        float retryY = scoreY - retryButton.getHeight() - 50;
-        float exitY = retryY - exitButton.getHeight() - 30;
-
-        retryBounds = new Rectangle(btnX, retryY, retryButton.getWidth(), retryButton.getHeight());
-        exitBounds = new Rectangle(btnX, exitY, exitButton.getWidth(), exitButton.getHeight());
+        // Escala de botones para que sean más grandes
+        buttonScale = 2.5f;
+        // Calcular posiciones
+        float centerX = MainGame.WIDTH / 2f;
+        // Puntuación en la parte superior
+        // Título GAME OVER debajo de la puntuación
+        float titleY = MainGame.HEIGHT * 0.6f;
+        // Botones debajo del título
+        float btnWidth = retryButton.getWidth() * buttonScale;
+        float btnHeight = retryButton.getHeight() * buttonScale;
+        float startX = centerX - btnWidth / 2f;
+        float retryY = titleY - titleTexture.getHeight() - 80;
+        float exitY = retryY - btnHeight - 40;
+        retryBounds = new Rectangle(startX, retryY, btnWidth, btnHeight);
+        exitBounds = new Rectangle(startX, exitY, btnWidth, btnHeight);
     }
 
-    @Override
-    public void show() {}
+    @Override public void show() {}
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // Gestión de input
+        // Input
         if (Gdx.input.justTouched()) {
             Vector2 touch = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             touch.y = MainGame.HEIGHT - touch.y;
@@ -69,25 +67,38 @@ public class GameOverScreen implements Screen {
                 return;
             }
         }
-
-        // Dibujar elementos
+        // Dibujar
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
-        // Fondo
+        // Fondo completo
         game.batch.draw(background, 0, 0, MainGame.WIDTH, MainGame.HEIGHT);
-        // Título "Game Over"
+        // Puntuación centrada grande
+        String scoreText = String.valueOf(score);
+        float scoreWidth = scoreFont.getSpaceXadvance() * scoreText.length();
+        scoreFont.draw(game.batch,
+            scoreText,
+            (MainGame.WIDTH - scoreWidth) / 2f,
+            MainGame.HEIGHT - 100
+        );
+        // Título GAME OVER
         float titleX = (MainGame.WIDTH - titleTexture.getWidth()) / 2f;
-        float titleY = MainGame.HEIGHT - titleTexture.getHeight() - 100;
+        float titleY = MainGame.HEIGHT * 0.6f;
         game.batch.draw(titleTexture, titleX, titleY);
-        // Puntuación
-        String scoreText = "Puntuació: " + score;
-        float scoreX = (MainGame.WIDTH - font.getRegion().getRegionWidth()) / 2f; // centrado aproximado
-        game.batch.draw(font.getRegion(), 0, 0); // no se dibuja, se usa font.draw abajo
-        font.draw(game.batch, scoreText,
-            (MainGame.WIDTH - font.getSpaceXadvance() * scoreText.length()) / 2f,
-            titleY -  titleTexture.getHeight() - 30);
-        // Botones
-        game.batch.draw(retryButton, retryBounds.x, retryBounds.y);
-        game.batch.draw(exitButton, exitBounds.x, exitBounds.y);
+        // Botones escalados
+        game.batch.draw(
+            retryButton,
+            retryBounds.x,
+            retryBounds.y,
+            retryBounds.width,
+            retryBounds.height
+        );
+        game.batch.draw(
+            exitButton,
+            exitBounds.x,
+            exitBounds.y,
+            exitBounds.width,
+            exitBounds.height
+        );
         game.batch.end();
     }
 
@@ -100,7 +111,7 @@ public class GameOverScreen implements Screen {
     public void dispose() {
         background.dispose();
         titleTexture.dispose();
-        font.dispose();
+        scoreFont.dispose();
         retryButton.dispose();
         exitButton.dispose();
     }
