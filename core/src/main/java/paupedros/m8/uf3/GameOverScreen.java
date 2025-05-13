@@ -34,7 +34,7 @@ public class GameOverScreen implements Screen {
         retryButton = new Texture("play_again_button.png");
         exitButton = new Texture("sortir_button.png");
         // Escala de botones para que sean más grandes
-        buttonScale = 2.5f;
+        buttonScale = 1.5f;
         // Calcular posiciones
         float centerX = MainGame.WIDTH / 2f;
         // Puntuación en la parte superior

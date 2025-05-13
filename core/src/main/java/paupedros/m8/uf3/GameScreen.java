@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
             blockTexture = game.blockTextures[0]; // block_start.png
             initialY = 100;
         } else {
-            blockTexture = game.blockTextures[random.nextInt(3) + 1]; // basic o balcony
+            blockTexture = game.blockTextures[random.nextInt(4) + 1]; // basic o balcony
             Rectangle topBlock = blocks.get(blocks.size() - 1).rect;
             initialY = topBlock.y + topBlock.height;
         }
